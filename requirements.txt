@@ -1,0 +1,6 @@
+slack_sdk
+langgraph
+openai
+snowflake-connector-python
+python-dotenv
+pytest
