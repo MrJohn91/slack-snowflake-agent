@@ -43,6 +43,64 @@ graph TB
 - **Snowflake Gold Tables** - Source of truth for curated business data
 - **LLM** - Understands questions, routes to correct tools/tables
 
+## MCP Server Tools
+
+The MCP server provides three specific tools for LangGraph to use:
+
+### 1. `query_snowflake_gold()` - Main Querying Function
+**Purpose:** Execute business queries against Gold-layer tables
+**Parameters:**
+- `question` (string) - Natural language business question
+- `table_hint` (optional string) - Suggested Gold table to query
+
+**Returns:**
+- Query results formatted for Slack display
+- Metadata about the query executed
+- Error messages if query fails
+
+**Example Usage:**
+```python
+result = query_snowflake_gold(
+    question="What were daily sales this week?",
+    table_hint="DAILY_SALES_SUMMARY"
+)
+```
+
+### 2. `list_available_data()` - Discovery and Help
+**Purpose:** Help users understand what data is available
+**Parameters:**
+- `category` (optional string) - Filter by data category (Transactions, customers, products)
+
+**Returns:**
+- List of available Gold tables
+- Schema information for each table
+- Sample questions for each table
+
+**Example Usage:**
+```python
+tables = list_available_data(category="sales")
+# Returns info about DAILY_SALES_SUMMARY table
+```
+
+### 3. `get_data_help()` - User Guidance
+**Purpose:** Provide contextual help and query suggestions
+**Parameters:**
+- `user_question` (string) - User's original question
+- `context` (optional string) - Additional context about user needs
+
+**Returns:**
+- Suggested rephrasing of questions
+- Examples of similar successful queries
+- Guidance on available data
+
+**Example Usage:**
+```python
+help_response = get_data_help(
+    user_question="How are we doing with sales?",
+    context="user_wants_trends"
+)
+```
+
 ## Components and Interfaces
 
 ### 1. Main Entry Point (`main.py`)
@@ -71,11 +129,26 @@ graph TB
 - Handles MCP protocol communication
 
 ### 4. Snowflake Tools (`agent/tools/snowflake_tools.py`)
-**What it does:** Encapsulates secure Snowflake access and query building
-- Maps natural language to specific Gold tables (DAILY_SALES_SUMMARY, CUSTOMER_PRODUCT_AFFINITY_MONTHLY)
-- Builds safe SQL queries targeting only Gold-layer tables
-- Executes queries securely without exposing credentials
-- Provides metadata about available Gold tables
+**What it does:** Encapsulates secure Snowflake access and query building through three specific MCP tools:
+
+#### MCP Tools Provided:
+1. **`query_snowflake_gold()`** - Main querying function
+   - Maps natural language to specific Gold tables (DAILY_SALES_SUMMARY, CUSTOMER_PRODUCT_AFFINITY_MONTHLY)
+   - Builds safe SQL queries targeting only Gold-layer tables
+   - Executes queries securely without exposing credentials
+   - Returns formatted query results
+
+2. **`list_available_data()`** - Discovery and help
+   - Lists available Gold tables and their schemas
+   - Provides table descriptions and column information
+   - Shows sample queries for each table
+   - Helps users understand what data is available
+
+3. **`get_data_help()`** - User guidance
+   - Provides contextual help based on user questions
+   - Suggests appropriate queries for common business questions
+   - Offers examples of supported question patterns
+   - Guides users toward successful data interactions
 
 ### 5. Slack Tools (`agent/tools/slack_tools.py`)
 **What it does:** Handles Slack integration and response formatting
