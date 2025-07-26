@@ -1,1 +1,1 @@
-# MCP tools package initialization
+# agent.tools package

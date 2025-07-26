@@ -4,4 +4,19 @@ version = "0.1.0"
 description = "Snowflake MCP Server"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+
+dependencies = [
+  "fastmcp",                      # MCP framework
+  "snowflake-connector-python",  # Snowflake DB access
+  "python-dotenv",               # For .env file loading
+  "langgraph",                   # Workflow orchestration
+  "openai",                      # LLM interaction
+  "slack_sdk"                    # Slack bot support
+]
+
+[tool.mcp]
+# (You can leave this empty unless you're using advanced MCP settings)
+
+
+[tool.uv.scripts]
+dev = "python -m agent.core"  # Custom dev shortcut

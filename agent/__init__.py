@@ -1,1 +1,1 @@
-# MCP package initialization
+# agent package
