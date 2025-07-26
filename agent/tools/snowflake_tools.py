@@ -40,6 +40,9 @@ def query_gold_view(question: str, limit: int = 10) -> Dict[str, Any]:
     # Simple intent recognition for Milestone 1
     question_lower = question.lower()
     
+    # Date range to match available data in the Gold layer
+    date_filter = "TRANSACTION_DATE BETWEEN '2023-12-01' AND '2023-12-31'"
+    
     if any(word in question_lower for word in ['daily sales', 'sales this week', 'sales trend', 'revenue']):
         view_name = Config.GOLD_TABLES["daily_sales"]
         # Query for recent daily sales data - aggregated by date and category
@@ -53,7 +56,7 @@ def query_gold_view(question: str, limit: int = 10) -> Dict[str, Any]:
                 SUM(TOTAL_REVENUE) as DAILY_REVENUE,
                 ROUND(AVG(AVG_PRICE_PER_UNIT), 2) as AVG_PRICE_PER_UNIT
             FROM {view_name} 
-            WHERE TRANSACTION_DATE >= DATEADD(day, -7, CURRENT_DATE())
+            WHERE {date_filter}
             GROUP BY TRANSACTION_DATE, PRODUCT_CATEGORY, CUSTOMER_TYPE
             ORDER BY TRANSACTION_DATE DESC, DAILY_REVENUE DESC 
             LIMIT {limit}
@@ -71,7 +74,7 @@ def query_gold_view(question: str, limit: int = 10) -> Dict[str, Any]:
                 SUM(TOTAL_REVENUE) as TOTAL_REVENUE,
                 ROUND(AVG(TOTAL_REVENUE), 2) as AVG_REVENUE_PER_PURCHASE
             FROM {view_name}
-            WHERE TRANSACTION_DATE >= DATEADD(day, -30, CURRENT_DATE())
+            WHERE {date_filter}
             GROUP BY CUSTOMER_TYPE, PRODUCT_CATEGORY
             ORDER BY TOTAL_REVENUE DESC
             LIMIT {limit}
@@ -89,7 +92,7 @@ def query_gold_view(question: str, limit: int = 10) -> Dict[str, Any]:
                 SUM(TOTAL_REVENUE) as TOTAL_REVENUE,
                 ROUND(AVG(AVG_PRICE_PER_UNIT), 2) as AVG_PRICE
             FROM {view_name}
-            WHERE TRANSACTION_DATE >= DATEADD(day, -30, CURRENT_DATE())
+            WHERE {date_filter}
             GROUP BY PRODUCT_NAME, PRODUCT_CATEGORY
             ORDER BY TOTAL_REVENUE DESC
             LIMIT {limit}
