@@ -1,0 +1,7 @@
+[project]
+name = "mcp-server-snowflake"
+version = "0.1.0"
+description = "Snowflake MCP Server"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
