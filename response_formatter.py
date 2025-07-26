@@ -1,1 +1,0 @@
-# Format query results for Slack display

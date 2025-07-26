@@ -1,0 +1,33 @@
+# Environment files
+.env
+.python-version
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE/Editor files
+.vscode/
+.DS_Store
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Package files
+uv.lock
+*.egg-info/
+dist/
+build/
+
+# Test coverage
+.coverage
+htmlcov/
+
+# Logs
+*.log
+EOF

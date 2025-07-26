@@ -1,1 +1,0 @@
-# MCP client for Snowflake integration
