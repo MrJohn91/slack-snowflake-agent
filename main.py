@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Main entry point for the Slack Snowflake Agent MCP Server
+Main entry point for the Snowflake Agent MCP Server
 Starts the MCP server that provides tools for querying Snowflake Gold-layer data
 """
 
