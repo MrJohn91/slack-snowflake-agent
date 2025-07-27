@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This feature implements an AI-powered Slack agent that bridges the gap between raw business questions and deep Snowflake insights using AI to make data instantly accessible via natural language. The agent enables users (analysts, ops, sales teams, executives) to query curated Snowflake Gold-layer tables through Slack without needing SQL knowledge or leaving their workflow.
+This feature implements an MCP server that bridges the gap between raw business questions and deep Snowflake insights using AI to make data instantly accessible via natural language through Claude Desktop. The server enables users (analysts, ops, sales teams, executives) to query curated Snowflake Gold-layer tables through Claude Desktop's chat interface without needing SQL knowledge.
 
 The system leverages a modern Snowflake data stack structured into Bronze → Silver → Gold layers, with the agent specifically targeting Gold-layer tables for business insights. It uses the Model Context Protocol (MCP) for secure data access and provides conversational responses through MCP-compatible clients like Claude Desktop.
 
@@ -12,14 +12,14 @@ Key capabilities include understanding business questions like "Which products a
 
 ### Requirement 1
 
-**User Story:** As a business user, I want to ask data questions in plain English through Slack, so I can get insights from pre-aggregated Snowflake Gold tables without learning SQL or using complex BI tools.
+**User Story:** As a business user, I want to ask data questions in plain English through Claude Desktop, so I can get insights from pre-aggregated Snowflake Gold tables without learning SQL or using complex BI tools.
 
 #### Acceptance Criteria
 
-1. WHEN a user sends a natural language question in Slack (e.g., "What were daily sales this week?") THEN the system SHALL parse and understand the intent of the question
-2. WHEN the system receives a data query request THEN it SHALL convert the natural language to appropriate Snowflake SQL queries targeting Gold-layer tables only
-3. WHEN a query is executed successfully THEN the system SHALL return formatted results in Slack within 30 seconds
-4. WHEN a user asks an ambiguous question THEN the system SHALL ask clarifying questions to ensure accurate results
+1. WHEN a user sends a natural language question in Claude Desktop (e.g., "What were daily sales this week?") THEN the MCP server SHALL parse and understand the intent of the question
+2. WHEN the MCP server receives a data query request THEN it SHALL convert the natural language to appropriate Snowflake SQL queries targeting Gold-layer tables only
+3. WHEN a query is executed successfully THEN the system SHALL return formatted results to Claude Desktop within 30 seconds
+4. WHEN a user asks an ambiguous question THEN Claude Desktop SHALL display clarifying questions to ensure accurate results
 5. WHEN a user asks about customer segments, product popularity, or sales trends THEN the system SHALL map to appropriate Gold tables like CUSTOMER_PRODUCT_AFFINITY_MONTHLY and DAILY_SALES_SUMMARY
 
 ### Requirement 2
@@ -39,7 +39,7 @@ Key capabilities include understanding business questions like "Which products a
 
 #### Acceptance Criteria
 
-1. WHEN the system connects to Snowflake THEN it SHALL use MCP server tools for all database interactions without exposing direct database credentials in Slack
+1. WHEN the system connects to Snowflake THEN it SHALL use MCP server tools for all database interactions without exposing direct database credentials to Claude Desktop
 2. WHEN authentication is required THEN the system SHALL securely manage Snowflake credentials through MCP encapsulation
 3. WHEN multiple users access the system THEN each SHALL have appropriate access controls reflecting their Snowflake permissions
 4. WHEN MCP tools are updated THEN the system SHALL continue to function without requiring agent code changes
@@ -87,7 +87,7 @@ Key capabilities include understanding business questions like "Which products a
 1. WHEN a user asks "What were daily sales this week?" THEN the system SHALL map to DAILY_SALES_SUMMARY table and return daily sales data
 2. WHEN a user asks "Which customer types prefer which products?" THEN the system SHALL query CUSTOMER_PRODUCT_AFFINITY_MONTHLY and return customer segment preferences
 3. WHEN a user asks "How do Premium customers compare to Regular customers?" THEN the system SHALL analyze customer spending patterns using DAILY_SALES_SUMMARY table
-4. WHEN the system handles these core question types THEN it SHALL demonstrate the complete workflow from Slack to Snowflake and back
+4. WHEN the system handles these core question types THEN it SHALL demonstrate the complete workflow from Claude Desktop to Snowflake and back
 5. WHEN users ask questions outside the initial scope THEN the system SHALL gracefully indicate the limitation and suggest supported query types
 
 ### Requirement 8
@@ -98,7 +98,7 @@ Key capabilities include understanding business questions like "Which products a
 
 1. WHEN new MCP servers are added THEN the system SHALL automatically discover and integrate them
 2. WHEN the Snowflake Gold table schema changes THEN the system SHALL adapt without requiring manual updates
-3. WHEN new query types are needed THEN developers SHALL be able to extend LangGraph workflows easily
+3. WHEN new query types are needed THEN developers SHALL be able to extend MCP server tools easily
 4. WHEN system monitoring is required THEN the system SHALL provide health checks and performance metrics
 
 ## Milestone 1 Supported Questions (Real Data)

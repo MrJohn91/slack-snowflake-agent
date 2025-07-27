@@ -2,9 +2,9 @@
 
 ## Overview
 
-The Slack Snowflake Agent bridges the gap between raw business questions and deep Snowflake insights by making curated Gold-layer data instantly accessible via natural language in Slack. The system targets business users, analysts, sales teams, and executives who need quick data insights without SQL knowledge or leaving their workflow.
+The Snowflake MCP Server bridges the gap between raw business questions and deep Snowflake insights by making curated Gold-layer data instantly accessible via natural language through Claude Desktop. The system targets business users, analysts, sales teams, and executives who need quick data insights without SQL knowledge.
 
-**Core Problem Solved:** Users can't write SQL or don't have time to query dashboards, but they want instant answers in tools they already use (Slack) with contextual, conversational interaction.
+**Core Problem Solved:** Users can't write SQL or don't have time to query dashboards, but they want instant answers through conversational AI interfaces like Claude Desktop.
 
 **System Flow:**
 1. **User asks a business question through MCP client** (like "Which customer types spend the most?")
@@ -51,7 +51,7 @@ The MCP server provides three specific tools for LangGraph to use:
 - `table_hint` (optional string) - Suggested Gold table to query
 
 **Returns:**
-- Query results formatted for Slack display
+- Query results formatted for Claude Desktop display
 - Metadata about the query executed
 - Error messages if query fails
 
@@ -100,11 +100,7 @@ help_response = get_data_help(
 
 ## Components and Interfaces
 
-### 1. Main Entry Point (`main.py`)
-**What it does:** Minimal entry point that starts the system
-- Initializes configuration
-- Starts the LangGraph workflow
-- Handles graceful shutdown
+
 
 ### 2. Main Entry Point (`main.py`)
 **What it does:** Starts the MCP server and makes it available for client connections
@@ -140,12 +136,12 @@ help_response = get_data_help(
    - Offers examples of supported question patterns
    - Guides users toward successful data interactions
 
-### 5. Response Formatting (`agent/tools/slack_tools.py`)
-**What it does:** Formats query results for optimal display in MCP clients
+### 5. Response Formatting (`agent/tools/response_formatter.py`)
+**What it does:** Formats query results for optimal display in Claude Desktop
 - Formats query results into readable tables and summaries
 - Creates structured responses for different data types
 - Handles error message formatting
-- Optimizes display for various MCP client interfaces
+- Optimizes display for Claude Desktop's chat interface
 
 ## Milestone 1 Implementation Focus
 
@@ -176,16 +172,15 @@ The system will use pattern matching and intent recognition to map natural langu
 
 ```
 mcp-server-snowflake/
-├── main.py                   # Entry point (minimal, already exists)
-├── agent_workflow.py         # LangGraph workflow logic
-├── config.py                 # Environment/config management
+├── main.py                   # Entry point - starts MCP server
 ├── agent/                    # MCP server components
 │   ├── __init__.py           # Package init
+│   ├── config.py             # Configuration management
 │   ├── core.py               # MCP server setup
 │   └── tools/
 │       ├── __init__.py       # Package init
 │       ├── snowflake_tools.py # Gold table queries & mapping
-│       └── slack_tools.py     # Slack response formatting
+│       └── response_formatter.py # Claude Desktop response formatting
 ├── tests/                    # Test directory
 ├── pyproject.toml           # Project config
 └── requirements.txt         # Dependencies 
@@ -200,14 +195,6 @@ from dataclasses import dataclass
 from typing import List, Dict, Any, Optional
 
 @dataclass
-class UserMessage:
-    """What the user said to us"""
-    user_id: str
-    channel_id: str
-    text: str
-    timestamp: str
-
-@dataclass
 class QueryResult:
     """What we got back from Snowflake Gold tables"""
     sql_query: str
@@ -218,18 +205,16 @@ class QueryResult:
     error_message: Optional[str] = None
 
 @dataclass
-class SlackResponse:
-    """What we send back to Slack"""
+class MCPResponse:
+    """What we send back to Claude Desktop via MCP"""
     text: str
     formatted_table: Optional[str] = None
-    chart_url: Optional[str] = None
+    metadata: Optional[Dict[str, Any]] = None
 ```
 
 ### Dependencies (from requirements.txt)
-- **slack_sdk** - Slack Bot API integration
-- **langgraph** - Workflow orchestration
-- **openai** - LLM for natural language understanding
-- **snowflake-connector-python** - Snowflake connectivity (via MCP)
+- **fastmcp** - MCP server implementation
+- **snowflake-connector-python** - Snowflake connectivity
 - **python-dotenv** - Environment configuration
 - **pytest** - Testing framework
 
@@ -260,15 +245,15 @@ class SlackResponse:
 ### How we'll test it:
 
 1. **Unit Tests** - Test each Python file individually
-2. **Integration Tests** - Test the whole flow from Slack to Snowflake
-3. **Manual Testing** - Actually try asking questions in Slack
+2. **Integration Tests** - Test the whole flow from Claude Desktop to Snowflake
+3. **Manual Testing** - Actually try asking questions in Claude Desktop
 4. **Security Tests** - Make sure bad queries can't break anything
 
 ## Security
 
 ### Keeping things safe:
 
-1. **MCP encapsulates all Snowflake access** - No direct database credentials in Slack environment
+1. **MCP encapsulates all Snowflake access** - No direct database credentials exposed to Claude Desktop
 2. **Gold-layer only queries** - System restricted to curated, business-ready tables only
 3. **User permissions enforced** - MCP respects Snowflake user-level access controls
 4. **Query validation** - Only approved Gold table queries can be executed

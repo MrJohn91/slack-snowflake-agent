@@ -1,24 +1,29 @@
-# Slack Snowflake Agent
+# Snowflake MCP Server
 
-MCP server that enables natural language queries against Snowflake Gold-layer tables through AI clients like Claude Desktop. Ask business questions in plain English and get instant insights without SQL knowledge.
+MCP server that enables natural language queries against Snowflake Gold-layer tables through Claude Desktop. Ask business questions in plain English and get instant insights without SQL knowledge.
 
 ## Overview
 
-This MCP server bridges the gap between raw business questions and deep Snowflake insights by making data instantly accessible via natural language through AI clients. It enables users (analysts, ops, sales teams, executives) to query curated Snowflake Gold-layer tables through MCP-compatible clients like Claude Desktop without needing SQL knowledge.
+This MCP server bridges the gap between raw business questions and deep Snowflake insights by making data instantly accessible via natural language through Claude Desktop. Users (analysts, ops, sales teams, executives) can query curated Snowflake Gold-layer tables through Claude Desktop's chat interface without needing SQL knowledge.
 
-The system leverages a modern Snowflake data stack structured into Bronze → Silver → Gold layers, specifically targeting Gold-layer tables for business insights. It uses the Model Context Protocol (MCP) for secure data access and provides three well-defined tools that AI clients can use to access Snowflake data.
+**How it works:**
+- **Claude Desktop (front-end)**: Where you chat naturally and ask questions
+- **MCP Server (back-end)**: Python server running in the background with Snowflake tools  
+- **Communication**: Claude Desktop sends requests to your MCP server, which queries Snowflake and returns formatted results
+
+The system leverages a modern Snowflake data stack (Bronze → Silver → Gold layers) and provides three MCP tools that Claude Desktop can use to access your data.
 
 ### Key Features
 - **Natural Language Queries**: "Which customer types spend the most on Toys?"
 - **Gold-Layer Focus**: Queries only curated, business-ready data
 - **Secure Access**: MCP encapsulation for database security
-- **MCP Integration**: Works with Claude Desktop and other MCP-compatible AI clients
+- **Claude Desktop Integration**: Works seamlessly with Claude Desktop's chat interface
 
 ### Tech Stack
 - **FastMCP** - Model Context Protocol server implementation
 - **Snowflake** - Data warehouse with Bronze/Silver/Gold architecture
 - **Python 3.11+** - Core runtime environment
-- **Compatible with**: Claude Desktop, OpenAI clients, and other MCP-compatible AI tools
+- **Primary Client**: Claude Desktop (other MCP clients also supported)
 
 ## Architecture
 ```
@@ -62,8 +67,7 @@ SNOWFLAKE_WAREHOUSE=your_warehouse
 SNOWFLAKE_DATABASE=your_database
 SNOWFLAKE_SCHEMA=GOLD
 
-# Optional: OpenAI API key if using OpenAI-compatible clients
-OPENAI_API_KEY=your-openai-key
+# No additional API keys needed - Claude Desktop handles the LLM
 ```
 
 3. **Test and run:**
@@ -94,6 +98,6 @@ Add to your Claude Desktop MCP settings:
 │   ├── core.py               # MCP server with 3 tools
 │   └── tools/
 │       ├── snowflake_tools.py # Snowflake Gold table queries
-│       └── slack_tools.py     # Response formatting
+│       └── response_formatter.py # Claude Desktop response formatting
 └── tests/                    # Tests
 ```
