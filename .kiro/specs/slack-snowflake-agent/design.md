@@ -7,10 +7,10 @@ The Slack Snowflake Agent bridges the gap between raw business questions and dee
 **Core Problem Solved:** Users can't write SQL or don't have time to query dashboards, but they want instant answers in tools they already use (Slack) with contextual, conversational interaction.
 
 **System Flow:**
-1. **User asks a business question in Slack** (like "Which customer types spend the most?")
-2. **LangGraph orchestrates the workflow** (maps question to appropriate Gold table)
-3. **MCP tools securely query Snowflake** (targets specific Gold-layer tables like DAILY_SALES_SUMMARY)
-4. **Conversational response in Slack** ("Premium customers spent $45K this month on Toys, while Regular customers spent $32K. Would you like a breakdown by category?")
+1. **User asks a business question through MCP client** (like "Which customer types spend the most?")
+2. **MCP client calls appropriate MCP server tool** (query_snowflake_gold with the question)
+3. **MCP server processes request and queries Snowflake** (targets specific Gold-layer tables like DAILY_SALES_SUMMARY)
+4. **Formatted response returned to MCP client** ("Premium customers spent $45K this month on Toys, while Regular customers spent $32K. Would you like a breakdown by category?")
 
 **Milestone 1 Focus:** Handle simple, clear business questions targeting DAILY_SALES_SUMMARY and CUSTOMER_PRODUCT_AFFINITY_MONTHLY Gold tables.
 
@@ -20,28 +20,25 @@ The system leverages a modern Snowflake data stack (Bronze → Silver → Gold l
 
 ```mermaid
 graph TB
-    A[Slack User Interface] --> B[LangGraph Orchestrator]
-    B --> C[MCP Server Tools]
-    C --> D[Snowflake Gold Tables]
+    A[MCP Client (Claude Desktop, etc.)] --> B[MCP Server Tools]
+    B --> C[Snowflake Gold Tables]
     
     subgraph "Snowflake Data Stack"
-        E[Bronze Layer] --> F[Silver Layer]
-        F --> D
-        D --> G[DAILY_SALES_SUMMARY]
-        D --> H[CUSTOMER_PRODUCT_AFFINITY_MONTHLY]
+        D[Bronze Layer] --> E[Silver Layer]
+        E --> C
+        C --> F[DAILY_SALES_SUMMARY]
+        C --> G[CUSTOMER_PRODUCT_AFFINITY_MONTHLY]
     end
     
-    D --> C
     C --> B
     B --> A
 ```
 
 **Component Roles:**
-- **Slack Agent** - User interface for natural language queries
-- **LangGraph** - Orchestrates NLP → tool → Snowflake → response logic
-- **MCP Server** - Secure query execution, exposes tools to LLM, hides credentials
+- **MCP Client** - User interface (Claude Desktop, other LLM clients) for natural language queries
+- **MCP Server** - Secure query execution, exposes three tools, handles Snowflake connection
 - **Snowflake Gold Tables** - Source of truth for curated business data
-- **LLM** - Understands questions, routes to correct tools/tables
+- **LLM (in client)** - Understands questions, calls appropriate MCP tools
 
 ## MCP Server Tools
 
@@ -109,18 +106,11 @@ help_response = get_data_help(
 - Starts the LangGraph workflow
 - Handles graceful shutdown
 
-### 2. LangGraph Workflow (`agent_workflow.py`)
-**What it does:** The "brain" that orchestrates the entire flow
-- Reads the user's message from Slack
-- Figures out if it's a data question
-- Decides which MCP tools to use
-- Coordinates between Slack and Snowflake tools
-
-**Simple workflow steps:**
-1. **Understand** - What is the user asking?
-2. **Plan** - What Gold table do I need to query?
-3. **Execute** - Run the query through MCP tools
-4. **Format** - Make the results look nice for Slack
+### 2. Main Entry Point (`main.py`)
+**What it does:** Starts the MCP server and makes it available for client connections
+- Initializes the MCP server from agent/core.py
+- Handles server startup and shutdown
+- Provides the entry point for MCP client connections
 
 ### 3. MCP Core (`agent/core.py`)
 **What it does:** Sets up the MCP server infrastructure
@@ -150,12 +140,12 @@ help_response = get_data_help(
    - Offers examples of supported question patterns
    - Guides users toward successful data interactions
 
-### 5. Slack Tools (`agent/tools/slack_tools.py`)
-**What it does:** Handles Slack integration and response formatting
-- Connects to Slack and listens for messages
-- Formats query results for Slack display
-- Creates readable tables and summaries
-- Manages conversational responses
+### 5. Response Formatting (`agent/tools/slack_tools.py`)
+**What it does:** Formats query results for optimal display in MCP clients
+- Formats query results into readable tables and summaries
+- Creates structured responses for different data types
+- Handles error message formatting
+- Optimizes display for various MCP client interfaces
 
 ## Milestone 1 Implementation Focus
 

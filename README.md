@@ -1,30 +1,28 @@
 # Slack Snowflake Agent
 
-AI-powered Slack agent that enables natural language queries against Snowflake Gold-layer tables. Ask business questions in plain English and get instant insights without SQL knowledge.
+MCP server that enables natural language queries against Snowflake Gold-layer tables through AI clients like Claude Desktop. Ask business questions in plain English and get instant insights without SQL knowledge.
 
 ## Overview
 
-This feature implements an AI-powered Slack agent that bridges the gap between raw business questions and deep Snowflake insights using AI to make data instantly accessible via natural language. The agent enables users (analysts, ops, sales teams, executives) to query curated Snowflake Gold-layer tables through Slack without needing SQL knowledge or leaving their workflow.
+This MCP server bridges the gap between raw business questions and deep Snowflake insights by making data instantly accessible via natural language through AI clients. It enables users (analysts, ops, sales teams, executives) to query curated Snowflake Gold-layer tables through MCP-compatible clients like Claude Desktop without needing SQL knowledge.
 
-The system leverages a modern Snowflake data stack structured into Bronze → Silver → Gold layers, with the agent specifically targeting Gold-layer tables for business insights. It uses the Model Context Protocol (MCP) for secure data access, LangGraph for intelligent orchestration, and provides conversational responses directly in Slack.
+The system leverages a modern Snowflake data stack structured into Bronze → Silver → Gold layers, specifically targeting Gold-layer tables for business insights. It uses the Model Context Protocol (MCP) for secure data access and provides three well-defined tools that AI clients can use to access Snowflake data.
 
 ### Key Features
 - **Natural Language Queries**: "Which customer types spend the most on Toys?"
 - **Gold-Layer Focus**: Queries only curated, business-ready data
 - **Secure Access**: MCP encapsulation for database security
-- **Slack Integration**: Get formatted results directly in Slack
+- **MCP Integration**: Works with Claude Desktop and other MCP-compatible AI clients
 
 ### Tech Stack
-- **OpenAI** - LLM for natural language understanding and query generation
-- **LangGraph** - Workflow orchestration and AI agent logic
 - **FastMCP** - Model Context Protocol server implementation
-- **Slack SDK** - Slack Bot API integration
 - **Snowflake** - Data warehouse with Bronze/Silver/Gold architecture
 - **Python 3.11+** - Core runtime environment
+- **Compatible with**: Claude Desktop, OpenAI clients, and other MCP-compatible AI tools
 
 ## Architecture
 ```
-Slack → LangGraph → MCP Server → Snowflake Gold Tables
+MCP Client (Claude Desktop) → MCP Server → Snowflake Gold Tables
 ```
 
 ## Supported Questions
@@ -64,25 +62,38 @@ SNOWFLAKE_WAREHOUSE=your_warehouse
 SNOWFLAKE_DATABASE=your_database
 SNOWFLAKE_SCHEMA=GOLD
 
-SLACK_BOT_TOKEN=xoxb-your-bot-token
-SLACK_SIGNING_SECRET=your-signing-secret
+# Optional: OpenAI API key if using OpenAI-compatible clients
+OPENAI_API_KEY=your-openai-key
 ```
 
 3. **Test and run:**
 ```bash
-python tests/test_snowflake_connection.py  # Test Snowflake
+python tests/test_snowflake_connection.py  # Test Snowflake connection
 python main.py                             # Start MCP server
+```
+
+4. **Connect Claude Desktop:**
+Add to your Claude Desktop MCP settings:
+```json
+{
+  "mcpServers": {
+    "snowflake-agent": {
+      "command": "python",
+      "args": ["main.py"],
+      "cwd": "/path/to/your/project"
+    }
+  }
+}
 ```
 
 ## Project Structure
 ```
-├── main.py                   # Entry point
-├── agent_workflow.py         # LangGraph orchestration  
+├── main.py                   # Entry point - starts MCP server
 ├── agent/
-│   ├── config.py             # Configuration
-│   ├── core.py               # MCP server setup
+│   ├── config.py             # Configuration management
+│   ├── core.py               # MCP server with 3 tools
 │   └── tools/
-│       ├── snowflake_tools.py # Snowflake queries
-│       └── slack_tools.py     # Slack formatting
+│       ├── snowflake_tools.py # Snowflake Gold table queries
+│       └── slack_tools.py     # Response formatting
 └── tests/                    # Tests
 ```

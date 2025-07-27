@@ -4,7 +4,7 @@
 
 This feature implements an AI-powered Slack agent that bridges the gap between raw business questions and deep Snowflake insights using AI to make data instantly accessible via natural language. The agent enables users (analysts, ops, sales teams, executives) to query curated Snowflake Gold-layer tables through Slack without needing SQL knowledge or leaving their workflow.
 
-The system leverages a modern Snowflake data stack structured into Bronze → Silver → Gold layers, with the agent specifically targeting Gold-layer tables for business insights. It uses the Model Context Protocol (MCP) for secure data access, LangGraph for intelligent orchestration, and provides conversational responses directly in Slack.
+The system leverages a modern Snowflake data stack structured into Bronze → Silver → Gold layers, with the agent specifically targeting Gold-layer tables for business insights. It uses the Model Context Protocol (MCP) for secure data access and provides conversational responses through MCP-compatible clients like Claude Desktop.
 
 Key capabilities include understanding business questions like "Which products are most popular among Premium customers?", mapping them to appropriate Gold tables, executing queries securely, and responding conversationally with actionable insights.
 
@@ -24,14 +24,14 @@ Key capabilities include understanding business questions like "Which products a
 
 ### Requirement 2
 
-**User Story:** As a data analyst, I want the agent to use LangGraph for decision-making, so that the system can intelligently choose the right tools and orchestrate the workflow for each query.
+**User Story:** As a data analyst, I want the MCP server to provide intelligent tools for data access, so that LLM clients can query Snowflake data through a secure, standardized interface.
 
 #### Acceptance Criteria
 
-1. WHEN the agent receives a user request THEN LangGraph SHALL analyze the request and determine the appropriate MCP tools and workflows
-2. WHEN multiple data sources or tools are available THEN LangGraph SHALL select the most appropriate MCP server tools targeting Gold-layer tables
-3. WHEN a query requires multiple steps THEN LangGraph SHALL orchestrate the sequence of operations automatically
-4. WHEN an error occurs in the workflow THEN LangGraph SHALL handle graceful fallbacks and error recovery
+1. WHEN an MCP client connects to the server THEN the server SHALL expose three well-defined tools for data access
+2. WHEN multiple query types are supported THEN the MCP tools SHALL intelligently route requests to appropriate Gold-layer tables
+3. WHEN a query is executed THEN the MCP server SHALL handle the complete workflow from request to Snowflake response
+4. WHEN an error occurs THEN the MCP server SHALL provide clear error messages and graceful failure handling
 
 ### Requirement 3
 
@@ -47,14 +47,14 @@ Key capabilities include understanding business questions like "Which products a
 
 ### Requirement 4
 
-**User Story:** As a Slack workspace member, I want to interact with the agent through familiar Slack interfaces, so I can get data insights without leaving my workflow.
+**User Story:** As a user of MCP-compatible clients (like Claude Desktop), I want to interact with the Snowflake data through natural language, so I can get data insights through my preferred AI interface.
 
 #### Acceptance Criteria
 
-1. WHEN a user mentions the bot or uses a slash command THEN the system SHALL respond within the same Slack thread
-2. WHEN query results are returned THEN they SHALL be formatted as readable tables, charts, or summaries in Slack
-3. WHEN results are too large for Slack THEN the system SHALL provide summaries with options to get detailed data
-4. WHEN multiple users are in a channel THEN the system SHALL handle concurrent requests appropriately
+1. WHEN a user asks a question through an MCP client THEN the system SHALL respond with formatted data results
+2. WHEN query results are returned THEN they SHALL be formatted as readable tables and summaries
+3. WHEN results are too large THEN the system SHALL provide summaries with key insights
+4. WHEN multiple users access the system THEN the MCP server SHALL handle concurrent requests appropriately
 
 ### Requirement 5
 
