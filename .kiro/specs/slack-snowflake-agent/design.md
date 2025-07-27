@@ -18,22 +18,6 @@ The Slack Snowflake Agent bridges the gap between raw business questions and dee
 
 The system leverages a modern Snowflake data stack (Bronze → Silver → Gold layers) with the agent specifically targeting Gold-layer tables for business insights:
 
-```mermaid
-graph TB
-    A[MCP Client (Claude Desktop, etc.)] --> B[MCP Server Tools]
-    B --> C[Snowflake Gold Tables]
-    
-    subgraph "Snowflake Data Stack"
-        D[Bronze Layer] --> E[Silver Layer]
-        E --> C
-        C --> F[DAILY_SALES_SUMMARY]
-        C --> G[CUSTOMER_PRODUCT_AFFINITY_MONTHLY]
-    end
-    
-    C --> B
-    B --> A
-```
-
 **Component Roles:**
 - **MCP Client** - User interface (Claude Desktop, other LLM clients) for natural language queries
 - **MCP Server** - Secure query execution, exposes three tools, handles Snowflake connection
