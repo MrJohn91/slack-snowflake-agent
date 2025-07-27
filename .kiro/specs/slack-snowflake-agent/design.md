@@ -160,8 +160,7 @@ The system will use pattern matching and intent recognition to map natural langu
 
 ```
 mcp-server-snowflake/
-├── main.py                   # Entry point (minimal, already exists)
-├── agent_workflow.py         # LangGraph workflow logic
+├── main.py                   # Entry point 
 ├── config.py                 # Environment/config management
 ├── agent/                    # MCP server components
 │   ├── __init__.py           # Package init
@@ -211,7 +210,6 @@ class SlackResponse:
 
 ### Dependencies (from requirements.txt)
 - **slack_sdk** - Slack Bot API integration
-- **langgraph** - Workflow orchestration
 - **openai** - LLM for natural language understanding
 - **snowflake-connector-python** - Snowflake connectivity (via MCP)
 - **python-dotenv** - Environment configuration
