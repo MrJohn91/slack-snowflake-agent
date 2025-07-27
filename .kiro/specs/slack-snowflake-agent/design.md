@@ -18,22 +18,6 @@ The Snowflake MCP Server bridges the gap between raw business questions and deep
 
 The system leverages a modern Snowflake data stack (Bronze → Silver → Gold layers) with the agent specifically targeting Gold-layer tables for business insights:
 
-```mermaid
-graph TB
-    A[MCP Client (Claude Desktop, etc.)] --> B[MCP Server Tools]
-    B --> C[Snowflake Gold Tables]
-    
-    subgraph "Snowflake Data Stack"
-        D[Bronze Layer] --> E[Silver Layer]
-        E --> C
-        C --> F[DAILY_SALES_SUMMARY]
-        C --> G[CUSTOMER_PRODUCT_AFFINITY_MONTHLY]
-    end
-    
-    C --> B
-    B --> A
-```
-
 **Component Roles:**
 - **MCP Client** - User interface (Claude Desktop, other LLM clients) for natural language queries
 - **MCP Server** - Secure query execution, exposes three tools, handles Snowflake connection
@@ -172,7 +156,12 @@ The system will use pattern matching and intent recognition to map natural langu
 
 ```
 mcp-server-snowflake/
+<<<<<<< HEAD
 ├── main.py                   # Entry point - starts MCP server
+=======
+├── main.py                   # Entry point 
+├── config.py                 # Environment/config management
+>>>>>>> 057535a063baaa3f82c7f4b1efd16a762c3a36c6
 ├── agent/                    # MCP server components
 │   ├── __init__.py           # Package init
 │   ├── config.py             # Configuration management
@@ -213,8 +202,14 @@ class MCPResponse:
 ```
 
 ### Dependencies (from requirements.txt)
+<<<<<<< HEAD
 - **fastmcp** - MCP server implementation
 - **snowflake-connector-python** - Snowflake connectivity
+=======
+- **slack_sdk** - Slack Bot API integration
+- **openai** - LLM for natural language understanding
+- **snowflake-connector-python** - Snowflake connectivity (via MCP)
+>>>>>>> 057535a063baaa3f82c7f4b1efd16a762c3a36c6
 - **python-dotenv** - Environment configuration
 - **pytest** - Testing framework
 

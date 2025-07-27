@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+slack_sdk
+openai
+>>>>>>> 057535a063baaa3f82c7f4b1efd16a762c3a36c6
 snowflake-connector-python
 python-dotenv
 pytest
