@@ -1,5 +1,5 @@
 # agent/core.py
-# MCP server setup for Snowflake Gold-layer querying
+# ^MCP server setup for Snowflake Gold-layer querying
 # Provides secure, tool-based access to curated business data
 
 import sys
@@ -117,11 +117,17 @@ def main():
     try:
         Config.validate_all()
         logger.info("Starting Snowflake Gold Query MCP Server...")
+        logger.info(f"MCP server instance: {mcp}")
+        # Note: FastMCP doesn't expose tools attribute directly
+        logger.info("MCP server starting...")
         mcp.run()
     except KeyboardInterrupt:
         logger.info("Server stopped by user")
     except Exception as e:
         logger.error(f"Server startup error: {e}")
+        logger.error(f"Error type: {type(e)}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
         raise
 
 if __name__ == "__main__":

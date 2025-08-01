@@ -98,6 +98,5 @@ Add to your Claude Desktop MCP settings:
 │   ├── core.py               # MCP server with 3 tools
 │   └── tools/
 │       ├── snowflake_tools.py # Snowflake Gold table queries
-│       └── response_formatter.py # Claude Desktop response formatting
 └── tests/                    # Tests
 ```

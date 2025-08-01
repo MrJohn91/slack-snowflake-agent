@@ -1,22 +1,19 @@
 [project]
 name = "mcp-server-snowflake"
 version = "0.1.0"
-description = "Snowflake MCP Server"
+description = "Snowflake MCP Server for Claude Desktop"
 readme = "README.md"
 requires-python = ">=3.11"
-
 dependencies = [
-  "fastmcp",                      # MCP framework
-  "snowflake-connector-python",  # Snowflake DB access
-  "python-dotenv",               # For .env file loading
-  "langgraph",                   # Workflow orchestration
-  "openai",                      # LLM interaction
-  "slack_sdk"                    # Slack bot support
+    "fastmcp>=0.1.0",              # MCP framework
+    "snowflake-connector-python",  # Snowflake DB access
+    "python-dotenv",               # For .env file loading
+    "pytest",                      # For testing
 ]
 
 [tool.mcp]
-# (You can leave this empty unless you're using advanced MCP settings)
-
+# MCP server configuration
 
 [tool.uv.scripts]
-dev = "python -m agent.core"  # Custom dev shortcut
+dev = "python main.py"  # Start the MCP server
+test = "pytest tests/"  # Run tests

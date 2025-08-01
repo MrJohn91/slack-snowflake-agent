@@ -30,4 +30,6 @@ htmlcov/
 
 # Logs
 *.log
-EOF
+
+# Kiro specs and settings
+.kiro/
