@@ -11,7 +11,7 @@ This MCP server bridges the gap between raw business questions and deep Snowflak
 - **MCP Server (back-end)**: Python server running in the background with Snowflake tools  
 - **Communication**: Claude Desktop sends requests to your MCP server, which queries Snowflake and returns formatted results
 
-The system leverages a modern Snowflake data stack (Bronze → Silver → Gold layers) and provides three MCP tools that Claude Desktop can use to access your data.
+The system leverages a modern Snowflake data stack (Bronze → Silver → Gold layers) and provides three MCP tools that Claude Desktop can use to access the data.
 
 ### Key Features
 - **Natural Language Queries**: "Which customer types spend the most on Toys?"
